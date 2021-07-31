@@ -3,12 +3,25 @@ resource "google_cloud_run_service" "service" {
   location = var.region
   project = var.gcp_project
   template {
+    metadata {
+      annotations = {
+        "autoscaling.knative.dev/maxScale" = 5
+      }
+    }
     spec {
+      container_concurrency = 80
+      timeout_seconds = 300
       containers {
         image = "${var.region}-docker.pkg.dev/${var.gcp_project}/${var.prefix}${var.project}/${var.prefix}${var.project}-app:${var.service_version}"
         env {
           name = "GCP_PROJECT"
           value = var.gcp_project
+        }
+        resources {
+          limits = {
+            cpu = "4000m"
+            memory = "4096Mi"
+          }
         }
       }
       service_account_name = data.google_service_account.service-invoker.email

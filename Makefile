@@ -1,7 +1,7 @@
 TOP_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 SHELL := /bin/bash
 VENV_DIR = ${TOP_DIR}/.venv/
-PROJECT = gpcdp
+PROJECT = $(shell jq --raw-output .project ${TOP_DIR}/settings.tfvars.json)
 GCP_PROJECT := $(shell jq --raw-output .gcp_project ${TOP_DIR}/settings.tfvars.json)
 PREFIX := $(shell jq --raw-output .prefix ${TOP_DIR}/settings.tfvars.json)
 REGION := $(shell jq --raw-output .region ${TOP_DIR}settings.tfvars.json)
@@ -10,8 +10,12 @@ VERSION := $(shell git describe --no-match --always --dirty=-dirty-$(shell date 
 run:	init
 	cd ${TOP_DIR} && \
 	source ${VENV_DIR}/bin/activate && \
-	source ${TOP_DIR}/projectrc && \
-	PYTHONPATH=${TOP_DIR}; python3 -B app
+	export GCP_PROJECT=${GCP_PROJECT}; PYTHONPATH=${TOP_DIR}; python3 -B app
+
+send_events_via_pubsub:	init
+	cd ${TOP_DIR} && \
+	source ${VENV_DIR}/bin/activate && \
+	export GCP_PROJECT=${GCP_PROJECT}; PYTHONPATH=${TOP_DIR}; python3 -B ${TOP_DIR}/client/send_events_via_pubsub.py
 
 build:	init
 

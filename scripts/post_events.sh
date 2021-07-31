@@ -1,6 +1,12 @@
 #!/bin/bash
 
-count=1000
+TOP_DIR=$(cd `dirname $0`/.. && pwd -P)
+
+GCP_PROJECT=$(jq --raw-output .gcp_project ${TOP_DIR}/settings.tfvars.json)
+PROJECT=$(jq --raw-output .project ${TOP_DIR}/settings.tfvars.json)
+PREFIX=$(jq --raw-output .prefix ${TOP_DIR}/settings.tfvars.json)
+
+count=3
 items=$(for i in $(seq 1 ${count}); do u=${RANDOM}; echo -n "{\"id\":\"$u\",\"value\":\"$(date)\"},"; done; u=${RANDOM}; echo -n "{\"id\":\"$u\",\"value\":\"$(date)\"}")
 message="{\"items\":[${items}]}"
 echo "Message is $message"
@@ -15,7 +21,8 @@ case `basename $0 .sh` in
     curl -X POST https://conni-gcp-pubsub-cloudrun-pyasyncio-hyogknauxq-ey.a.run.app/events -d "${pubsub_message}"
     ;;
   post_events_via_pubsub)
-    gcloud pubsub topics publish conni-gcp-pubsub-cloudrun-pyasyncio-input --message="${message}"
+    gcloud config set project ${GCP_PROJECT}
+    gcloud pubsub topics publish ${PREFIX}${PROJECT}-input --message="${message}"
     ;;
   *)
     echo "dontknow"

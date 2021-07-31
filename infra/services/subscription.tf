@@ -6,7 +6,7 @@ resource "google_pubsub_subscription" "subscription" {
   message_retention_duration = "1200s"
   # 20 minutes
   retain_acked_messages = true
-  ack_deadline_seconds = 20
+  ack_deadline_seconds = 300
 
   push_config {
     push_endpoint = "${google_cloud_run_service.service.status[0].url}/events"

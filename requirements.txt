@@ -1,1 +1,2 @@
 gcloud-aio-datastore
+gcloud-aio-pubsub
