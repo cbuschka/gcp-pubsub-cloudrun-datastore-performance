@@ -5,6 +5,11 @@
 make deploy_resources
 ```
 
+### Deploy services
+```
+make deploy_services
+```
+
 ## License
 
 [MIT-0](./license.txt)
