@@ -5,6 +5,7 @@ RUN useradd app -m -d /home/app
 USER app
 WORKDIR /home/app
 ADD --chown=app:app /requirements.txt /home/app/
+ENV PATH=$PATH:/home/app/.local/bin
 RUN pip install --user -r requirements.txt
 ADD --chown=app:app /app /home/app/app/
 EXPOSE 8080
