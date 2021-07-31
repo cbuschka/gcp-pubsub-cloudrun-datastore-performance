@@ -1,0 +1,6 @@
+{
+  "project": "gpcdp",
+  "gcp_project": "<your gcp project>",
+  "prefix": "prefix-",
+  "region": "europe-west3"
+}
