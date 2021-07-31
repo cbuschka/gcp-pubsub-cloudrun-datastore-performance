@@ -1,0 +1,3 @@
+.venv/
+/projectrc
+credentials*.json
