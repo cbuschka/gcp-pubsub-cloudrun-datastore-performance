@@ -54,12 +54,12 @@ deploy_boostrap:
 
 deploy_resources:
 	@cd ${TOP_DIR}/infra/resources && \
-	terraform init -upgrade && \
+	terraform init -backend-config="bucket=${PREFIX}${PROJECT}-tfstate" -upgrade && \
 	terraform apply -auto-approve -var-file="${TOP_DIR}/settings.tfvars.json"
 
 deploy_services:	push_service
 	@cd ${TOP_DIR}/infra/services && \
-	terraform init -upgrade && \
+	terraform init -backend-config="bucket=${PREFIX}${PROJECT}-tfstate" -upgrade && \
 	terraform apply -auto-approve -var="service_version=${VERSION}" -var-file="${TOP_DIR}/settings.tfvars.json"
 
 destroy_services:
