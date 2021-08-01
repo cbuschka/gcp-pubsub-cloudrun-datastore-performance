@@ -6,12 +6,12 @@ const endTiming = <T>(start: Date, result: T, type: any): T => {
   return result;
 }
 
-export const withTiming = <T>(f: Function, type: any): T => {
+export const withTiming = <T>(f: () => Promise<T>, type: any): Promise<T> => {
   const start = new Date();
   const result = f();
   if (result && "then" in result) {
-    return result.finally((value: any) => {
-      return endTiming(start, value, type);
+    return result.finally(() => {
+      return endTiming(start, null, type);
     });
   }
 
