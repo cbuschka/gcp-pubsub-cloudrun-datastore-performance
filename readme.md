@@ -30,6 +30,14 @@ gcloud auth configure-docker <your region from settings.tfvars.json>-docker.pkg.
 
 ## Usage
 
+### Preparation
+
+This enables APIs, creates a tf state bucket, ...
+
+```
+make deploy_bootstrap
+```
+
 ### Deploy resources
 ```
 make deploy_resources

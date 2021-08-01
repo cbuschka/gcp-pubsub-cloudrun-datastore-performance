@@ -47,6 +47,11 @@ init_service:	init
 	@cd ${TOP_DIR}/app && \
 	yarn install
 
+deploy_boostrap:
+	@cd ${TOP_DIR}/infra/bootstrap && \
+	terraform init -upgrade && \
+	terraform apply -auto-approve -var-file="${TOP_DIR}/settings.tfvars.json"
+
 deploy_resources:
 	@cd ${TOP_DIR}/infra/resources && \
 	terraform init -upgrade && \
