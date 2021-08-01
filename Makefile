@@ -56,3 +56,15 @@ deploy_services:	push_service
 	@cd ${TOP_DIR}/infra/services && \
 	terraform init -upgrade && \
 	terraform apply -auto-approve -var="service_version=${VERSION}" -var-file="${TOP_DIR}/settings.tfvars.json"
+
+destroy_services:
+	@cd ${TOP_DIR}/infra/services && \
+	terraform init -upgrade && \
+	terraform destroy -auto-approve -var="service_version=${VERSION}" -var-file="${TOP_DIR}/settings.tfvars.json"
+
+destroy_resources:
+	@cd ${TOP_DIR}/infra/resources && \
+	terraform init -upgrade && \
+	terraform destroy -auto-approve -var-file="${TOP_DIR}/settings.tfvars.json"
+
+destroy_all:	destroy_services destroy_resources
