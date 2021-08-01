@@ -5,11 +5,11 @@ resource "google_cloud_run_service" "service" {
   template {
     metadata {
       annotations = {
-        "autoscaling.knative.dev/maxScale" = 5
+        "autoscaling.knative.dev/maxScale" = 1
       }
     }
     spec {
-      container_concurrency = 80
+      container_concurrency = 100
       timeout_seconds = 300
       containers {
         image = "${var.region}-docker.pkg.dev/${var.gcp_project}/${var.prefix}${var.project}/${var.prefix}${var.project}-app:${var.service_version}"
@@ -19,7 +19,7 @@ resource "google_cloud_run_service" "service" {
         }
         resources {
           limits = {
-            cpu = "4000m"
+            cpu = "1000m"
             memory = "4096Mi"
           }
         }

@@ -6,6 +6,8 @@
 * GNU make
 * terraform with version .terraform-version or better tfvm (https://github.com/cbuschka/tfvm)
 * python 3
+* nodejs lts/fermium or nvm
+* yarn
 * gcloud sdk
 
 ## Setup

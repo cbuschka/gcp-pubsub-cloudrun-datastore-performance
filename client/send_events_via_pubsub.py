@@ -14,8 +14,8 @@ topic_name = "conni-gpcdp-input"
 
 
 async def main():
-  message_count = 100
-  event_count_each = 100
+  message_count = 1
+  event_count_each = 10
   await asyncio.gather(
     *[send_pubsub_message(event_count_each) for _ in range(message_count)])
 
