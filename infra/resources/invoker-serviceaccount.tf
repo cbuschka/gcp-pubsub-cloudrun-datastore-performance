@@ -10,7 +10,8 @@ locals {
     "roles/pubsub.editor",
     "roles/pubsub.publisher",
     "roles/pubsub.subscriber",
-    "roles/logging.admin"
+    "roles/logging.admin",
+    "roles/run.admin"
   ]
 }
 

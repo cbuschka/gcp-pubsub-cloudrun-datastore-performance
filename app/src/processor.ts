@@ -1,5 +1,7 @@
 import {Datastore} from "@google-cloud/datastore";
 import {withTiming} from './timing';
+import {Batcher} from "./batcher";
+import os from 'os';
 
 interface Item {
   id: string;
@@ -8,37 +10,7 @@ interface Item {
 
 const datastore: Datastore = new Datastore();
 
-function splitToChunks(array: any[], chunkSize: number = 200): any[][] {
-  const chunks: any[][] = [];
-  let j: number;
-  let i: number;
-  for (i = 0, j = array.length; i < j; i += chunkSize) {
-    const chunk: any[] = array.slice(i, i + chunkSize);
-    chunks.push(chunk);
-  }
-  return chunks;
-}
-
-export const processItems = async (items: Item[]): Promise<any> => {
-  return withTiming(() => processItemsInternally(items), {
-    "action": "processItems",
-    count: items.length
-  });
-}
-
-const processItemsInternally = async (items: Item[]): Promise<any> => {
-  const itemChunks: any[][] = splitToChunks(items);
-
-  const updatePromises: Promise<any>[] = itemChunks.map((chunk, _) => withTiming(() => updateChunk(chunk), {
-    "action": "updateChunk",
-    count: chunk.length
-  }));
-  await Promise.all(updatePromises);
-
-  return "yupp " + itemChunks.length + " chunk(s) processed";
-};
-
-async function updateChunk(items: Item[]) {
+async function updateChunk(items: Item[]): Promise<any> {
   const kind = 'entity';
 
   const entities = items.map((item: Item) => {
@@ -48,7 +20,33 @@ async function updateChunk(items: Item[]) {
     ]);
     return {key, data: {value: item.value}};
   });
-  const commitResults: any = await datastore.save(entities);
+  return await datastore.save(entities);
 }
 
+const CHUNK_SIZE = 200;
+const QUEUE_SIZE = 1000;
+const CONCURRENCY_LEVEL = 100;
 
+const batcher: Batcher<Item, any> = new Batcher(updateChunk, 200, 1000, 100);
+
+export const processItems = async (batchId: string, items: Item[]): Promise<any> => {
+  const start = new Date();
+  const results = await withTiming(() => batcher.execute(batchId, items), {
+    "action": "processItems",
+    count: items.length
+  });
+  const end: Date = new Date();
+  const duration: number = end.getTime() - start.getTime();
+  return {
+    batchId,
+    itemCount: items.length,
+    results,
+    duration,
+    cpu: os.cpus().length,
+    memory: os.totalmem(),
+    chunkSize: CHUNK_SIZE,
+    queueSize: QUEUE_SIZE,
+    concurrencyLevel: CONCURRENCY_LEVEL,
+    retry: false
+  };
+}

@@ -15,6 +15,11 @@ send_events_via_pubsub:	init_client
 	source ${TOP_DIR}/client/.venv/bin/activate && \
 	export GCP_PROJECT=${GCP_PROJECT}; python3 -B ${TOP_DIR}/client/send_events_via_pubsub.py
 
+send_events_via_http:	init_client
+	cd ${TOP_DIR}/client && \
+	source ${TOP_DIR}/client/.venv/bin/activate && \
+	export GCP_PROJECT=${GCP_PROJECT}; export REGION=${REGION}; export PREFIX=${PREFIX}; python3 -B ${TOP_DIR}/client/send_events_via_http.py
+
 build_service:	init_service
 	cd ${TOP_DIR}/app && \
 	yarn run build && \

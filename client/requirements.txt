@@ -1,2 +1,2 @@
-gcloud-aio-datastore
 gcloud-aio-pubsub
+gcloud-aio-run

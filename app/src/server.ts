@@ -3,6 +3,7 @@ import {processItems} from "./processor";
 import * as os from 'os';
 import cluster from 'cluster';
 
+
 const app = express();
 app.use(express.json({limit: '200mb'}));
 
@@ -23,8 +24,8 @@ app.post("/events", async (req, res, next) => {
     const body = await req.body;
     const envelope = body.message;
     const message = JSON.parse(Buffer.from(envelope.data, 'base64').toString());
-    const result = await processItems(message.items);
-    res.send({result});
+    const result = await processItems(message.batchId, message.items);
+    res.send(result);
   } catch (e) {
     next(e);
   }
