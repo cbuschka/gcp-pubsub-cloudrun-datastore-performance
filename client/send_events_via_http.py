@@ -6,7 +6,7 @@ import os
 import random
 import uuid
 
-from .cloud_run import RunClient
+from gcloud.aio.run import RunClient
 
 random.seed()
 
